@@ -1,0 +1,161 @@
+#count how many rows(observations) are in the 'dataset' data frame
+dataset %>%
+count()
+
+#sample output
+    n
+1  100
+
+#-------------------------------------------------------------------------------------------
+
+#find out how many times each continent appears 
+dataset %>%
+count(continent)
+
+#sample output
+  continent   n
+1    Africa 624
+2  Americas 300
+3      Asia 396
+4    Europe 360
+5   Oceania  24
+
+#---------------------------------------------------------------------------------------------
+## Count()
+dataset%>%
+count(continent, sort = TRUE)
+
+#sample output
+  continent   n
+1    Africa 624
+2      Asia 396
+3    Europe 360
+4  Americas 300
+5   Oceania  24
+
+#------------------------------------------------------------------------------------------
+
+## Summarize 
+#find the population of each continent, sort in desc order of population
+dataset%>%
+count(continent, wt = population, sort = TRUE)
+
+#sample output
+  continent          n
+1      Asia 1395357351
+2    Europe  418120846
+3  Americas  345152446
+4    Africa  237640501
+5   Oceania   10686006
+
+#------------------------------------------------------------------------------
+#find the sum of the population
+dataset%>%
+summarize(total_population = sum(population))
+
+#sample output
+ total_population
+1      50440465801
+
+#---------------------------------------------------------------------------
+#find the total, average, and the maximum of the populations
+dataset%>%
+summarize(total_population = sum(population), 
+          average_population = mean(population), 
+          largest_population = max(population))
+
+#sample output
+  total_population   average_population   largest_population
+1      50440465801             29601212           1318683096
+
+
+#---------------------------------------------------------------------
+#average population by continent
+dataset%>%
+group_by(continent)%>%
+summarize(average_population = mean(population))
+
+
+#sample output
+# A tibble: 5 × 2
+  continent   average_population
+  <chr>                    <dbl>
+1 Africa                9916003
+2 Americas             24504795
+3 Asia                 77038722
+4 Europe               17169765
+5 Oceania               8874672
+
+
+#-------------------------------------------------------------------------
+
+#total population by continent and country
+dataset%>%
+group_by(continent, year)%>%
+summarize(total_population = sum(population))
+
+#sample output
+ A tibble: 60 × 3
+# Groups:   continent [5]
+   continent  year total_population
+   <chr>     <int>            <dbl>
+ 1 Africa     1952        237640501
+ 2 Africa     1957        264837738
+ 3 Africa     1962        296516865
+ 4 Africa     1967        335289489
+ 5 Africa     1972        379879541
+ 6 Africa     1977        433061021
+ 7 Africa     1982        499348587
+ 8 Africa     1987        574834110
+ 9 Africa     1992        659081517
+10 Africa     1997        743832984
+# ℹ 50 more rows
+# ℹ Use `print(n = ...)` to see more rows
+
+#-------------------------------------------------------------------------------
+
+#country with highest population in each continent
+dataset%>%
+group_by(continent)%>%
+slice_max(population, n = 1)
+
+#sample output
+ A tibble: 5 × 4
+# Groups:   continent [5]
+   country       continent  year   population
+   <chr>         <chr>     <int>   <int>    
+ 1 Nigeria       Africa     2007   135031164      
+ 2 United States Americas   2007   301139947    
+ 3 China         Asia       2007   1318683096    
+ 4 Germany       Europe     2007   82400996   
+ 5 Australia     Oceania    2007   20434176   
+
+#---------------------------------------------------------------------------------
+
+#smallest 3 populations each continent has ever had
+dataset%>%
+  group_by(continent)%>%
+  slice_min(population, n = 3)
+
+#sample output
+# A tibble: 15 × 4
+# Groups:   continent [5]
+   country               continent  year    population 
+   <chr>                 <chr>     <int>         <int>    
+ 1 Sao Tome and Principe Africa     1952        60011     
+ 2 Sao Tome and Principe Africa     1957        61325    
+ 3 Djibouti              Africa     1952        63149
+ 4 Trinidad and Tobago   Americas   1952       662850 
+ 5 Trinidad and Tobago   Americas   1957       764900    
+ 6 Trinidad and Tobago   Americas   1962       887498    
+ 7 Bahrain               Asia       1952       120447    
+ 8 Bahrain               Asia       1957       138655 
+ 9 Kuwait                Asia       1952       160000
+10 Iceland               Europe     1952       147962  
+11 Iceland               Europe     1957       165110
+12 Iceland               Europe     1962       182053
+13 New Zealand           Oceania    1952      1994794
+14 New Zealand           Oceania    1957      2229407
+15 New Zealand           Oceania    1962      2488550 
+
+#--------------------------------------------------------------------------------
